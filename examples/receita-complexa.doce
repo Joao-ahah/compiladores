@@ -1,0 +1,77 @@
+/*
+ * =============================
+ * RECEITA: PETIT GATEAU
+ * =============================
+ * 
+ * Rendimento: 4 porções individuais
+ * Tempo total: ~45min
+ * Dificuldade: Difícil
+ * 
+ * Bolinho de chocolate com centro cremoso.
+ * Timing é crucial - 8 minutos exatos de forno!
+ */
+
+recipe PetitGateau {
+    ingredients {
+        // Massa
+        chocolate_meio_amargo;   // 200g (70% cacau)
+        manteiga_sem_sal;        // 100g
+        ovos_inteiros;           // 2 unidades
+        gemas;                   // 2 unidades
+        acucar_refinado;         // 80g
+        farinha_de_trigo;        // 40g
+        
+        // Forminhas
+        manteiga_para_untar;
+        cacau_em_po_para_polvilhar;
+    }
+    
+    preparation {
+        // ========== PREPARAR FORMINHAS ==========
+        
+        // Untar e polvilhar cada forminha individual
+        repeat 4 times {
+            add manteiga_para_untar;
+            add cacau_em_po_para_polvilhar;
+        }
+        
+        // ========== GANACHE BASE ==========
+        
+        // Derreter chocolate com manteiga
+        add chocolate_meio_amargo;
+        add manteiga_sem_sal;
+        heat 150C;  // Fogo baixo ou banho-maria
+        mix 3min;   // Mexer até homogêneo
+        
+        // Deixar amornar
+        wait 5min;
+        
+        // ========== MASSA ==========
+        
+        // Bater ovos com açúcar
+        add ovos_inteiros;
+        add gemas;
+        add acucar_refinado;
+        mix 5min;  // Bater até dobrar de volume
+        
+        // Incorporar chocolate derretido
+        mix 2min;  // Misturar delicadamente
+        
+        // Adicionar farinha peneirada
+        add farinha_de_trigo;
+        mix 1min;  // Apenas até incorporar
+        
+        // ========== ASSAMENTO CRÍTICO ==========
+        
+        // Pré-aquecer forno
+        heat 200C;
+        
+        // Assar EXATAMENTE 8 minutos
+        // Menos = muito mole
+        // Mais = centro não fica cremoso
+        wait 8min;
+        
+        // Servir IMEDIATAMENTE
+        serve;
+    }
+}

@@ -1,0 +1,85 @@
+/*
+ * ================================================
+ * GRAMÁTICA DOCELANG - VERSÃO 2.0 (BNF)
+ * ================================================
+ * 
+ * Notação: BNF (Backus-Naur Form)
+ * Autor: Projeto Compiladores 2025
+ * Data: 15 de novembro de 2025
+ */
+
+/* ==================== ESTRUTURA PRINCIPAL ==================== */
+
+<programa> ::= <receita>
+
+<receita> ::= "recipe" <identificador> "{" <bloco_ingredientes> <bloco_preparacao> "}"
+
+<bloco_ingredientes> ::= "ingredients" "{" <lista_ingredientes> "}"
+
+<lista_ingredientes> ::= <ingrediente> ";"
+                       | <ingrediente> ";" <lista_ingredientes>
+
+<ingrediente> ::= <identificador>
+
+<bloco_preparacao> ::= "preparation" "{" <lista_comandos> "}"
+
+<lista_comandos> ::= <comando> ";"
+                   | <comando> ";" <lista_comandos>
+
+/* ==================== COMANDOS ==================== */
+
+<comando> ::= <comando_simples>
+            | <comando_composto>
+
+<comando_simples> ::= <comando_add>
+                    | <comando_mix>
+                    | <comando_heat>
+                    | <comando_wait>
+                    | <comando_serve>
+
+<comando_composto> ::= <comando_repeat>
+
+<comando_add> ::= "add" <identificador>
+
+<comando_mix> ::= "mix" <tempo>
+
+<comando_heat> ::= "heat" <temperatura>
+
+<comando_wait> ::= "wait" <tempo>
+
+<comando_serve> ::= "serve"
+
+<comando_repeat> ::= "repeat" <numero> "times" "{" <lista_comandos> "}"
+
+/* ==================== TOKENS LÉXICOS ==================== */
+
+<identificador> ::= <letra> <resto_id>
+
+<resto_id> ::= ε
+             | <letra> <resto_id>
+             | <digito> <resto_id>
+             | "_" <resto_id>
+
+<tempo> ::= <numero> <unidade_tempo>
+
+<unidade_tempo> ::= "s" | "min" | "h"
+
+<temperatura> ::= <numero> <unidade_temperatura>
+
+<unidade_temperatura> ::= "C" | "F"
+
+<numero> ::= <digito> <resto_numero>
+
+<resto_numero> ::= ε
+                 | <digito> <resto_numero>
+
+<letra> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" |
+            "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" |
+            "u" | "v" | "w" | "x" | "y" | "z" |
+            "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" |
+            "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" |
+            "U" | "V" | "W" | "X" | "Y" | "Z"
+
+<digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+/* ==================== FIM DA GRAMÁTICA ==================== */

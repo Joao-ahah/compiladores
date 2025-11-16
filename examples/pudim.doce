@@ -1,0 +1,63 @@
+/*
+ * ===========================
+ * RECEITA: PUDIM DE LEITE
+ * ===========================
+ * 
+ * Rendimento: 8 porções
+ * Tempo total: ~5h (incluindo geladeira)
+ * Dificuldade: Média
+ * 
+ * Clássico pudim brasileiro com calda de caramelo.
+ */
+
+recipe Pudim {
+    ingredients {
+        // Para a calda
+        acucar_para_calda;
+        agua;
+        
+        // Para o pudim
+        leite_condensado;
+        leite;
+        ovos;
+    }
+    
+    preparation {
+        // ========== CALDA DE CARAMELO ==========
+        
+        // Fazer o caramelo
+        add acucar_para_calda;
+        add agua;
+        heat 200C;  // Fogo alto
+        mix 10min;  // Mexer até caramelizar
+        
+        // Deixar esfriar um pouco
+        wait 5min;
+        
+        // ========== MISTURA DO PUDIM ==========
+        
+        // Bater ingredientes do pudim
+        add leite_condensado;
+        add leite;
+        
+        // Adicionar ovos um por vez
+        repeat 3 times {
+            add ovos;
+            mix 1min;  // Incorporar cada ovo
+        }
+        
+        // ========== COZIMENTO ==========
+        
+        // Assar em banho-maria
+        heat 180C;
+        wait 50min;  // Assar até firmar
+        
+        // Esfriar em temperatura ambiente
+        wait 1h;
+        
+        // Gelar
+        wait 3h;  // Mínimo 3 horas na geladeira
+        
+        serve;
+    }
+}

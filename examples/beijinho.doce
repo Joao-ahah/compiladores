@@ -1,0 +1,44 @@
+/*
+ * =====================
+ * RECEITA: BEIJINHO
+ * =====================
+ * 
+ * Rendimento: 35 unidades
+ * Tempo total: ~2h 20min
+ * Dificuldade: Fácil
+ * 
+ * Primo branco do brigadeiro, o beijinho
+ * é feito com coco e tem um cravo no topo.
+ */
+
+recipe Beijinho {
+    ingredients {
+        leite_condensado;    // 1 lata (395g)
+        coco_ralado;         // 100g (fresco ou desidratado)
+        manteiga;            // 1 colher de sopa
+        coco_para_cobertura; // 50g para passar por fora
+        cravos_da_india;     // 35 unidades (decoração)
+    }
+    
+    preparation {
+        // Combinar ingredientes principais
+        add leite_condensado;
+        add coco_ralado;
+        add manteiga;
+        
+        // Cozinhar até ponto
+        heat 170C;  // Fogo médio-baixo
+        mix 12min;  // Mexer sempre até desgrudar
+        
+        // Esfriar
+        wait 2h;
+        
+        // Modelar e decorar cada beijinho
+        repeat 35 times {
+            add coco_para_cobertura;
+            add cravos_da_india;  // Colocar 1 cravo no topo
+        }
+        
+        serve;
+    }
+}

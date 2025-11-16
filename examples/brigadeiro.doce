@@ -1,0 +1,48 @@
+/*
+ * ================================
+ * RECEITA: BRIGADEIRO TRADICIONAL
+ * ================================
+ * 
+ * Rendimento: 40 unidades
+ * Tempo total: ~2h 30min
+ * Dificuldade: Fácil
+ * 
+ * O brigadeiro é o doce mais popular do Brasil,
+ * presente em todas as festas infantis.
+ */
+
+recipe Brigadeiro {
+    // ========== INGREDIENTES ==========
+    ingredients {
+        leite_condensado;      // 1 lata (395g)
+        chocolate_em_po;       // 3 colheres de sopa (50% cacau)
+        manteiga;              // 1 colher de sopa
+        chocolate_granulado;   // Para cobertura (200g aprox.)
+    }
+    
+    // ========== MODO DE PREPARO ==========
+    preparation {
+        // Passo 1: Combinar ingredientes base
+        add leite_condensado;
+        add chocolate_em_po;
+        add manteiga;
+        
+        // Passo 2: Cozinhar em fogo médio
+        // IMPORTANTE: Mexer sempre para não queimar
+        heat 180C;
+        mix 15min;  // Mexer continuamente até desgrudar do fundo
+        
+        // Passo 3: Esfriar completamente
+        // A massa deve estar firme antes de enrolar
+        wait 2h;
+        
+        // Passo 4: Modelar brigadeiros
+        // Enrolar bolinhas de aproximadamente 15g cada
+        repeat 40 times {
+            add chocolate_granulado;
+        }
+        
+        // Passo 5: Servir
+        serve;
+    }
+}

@@ -1,0 +1,48 @@
+/*
+ * ==========================
+ * RECEITA: BOLO SIMPLES
+ * ==========================
+ * 
+ * Rendimento: 12 fatias
+ * Tempo total: ~1h 15min
+ * Dificuldade: Fácil
+ * 
+ * Bolo básico, perfeito para o café da tarde.
+ */
+
+recipe BoloSimples {
+    ingredients {
+        farinha_de_trigo;
+        acucar;
+        ovos;
+        leite;
+        oleo;
+        fermento_em_po;
+    }
+    
+    preparation {
+        // Misturar ingredientes líquidos
+        add ovos;
+        add acucar;
+        add oleo;
+        mix 3min;  // Bater bem até ficar homogêneo
+        
+        // Adicionar ingredientes secos alternando com leite
+        add farinha_de_trigo;
+        add leite;
+        mix 2min;
+        
+        // Adicionar fermento por último
+        add fermento_em_po;
+        mix 30s;  // Misturar delicadamente
+        
+        // Assar
+        heat 180C;  // Forno pré-aquecido
+        wait 40min; // Assar até dourar
+        
+        // Esfriar antes de desenformar
+        wait 15min;
+        
+        serve;
+    }
+}
