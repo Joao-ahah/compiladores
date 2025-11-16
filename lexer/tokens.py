@@ -1,39 +1,47 @@
 """
-DoceLang Token Definitions
-===========================
+DoceLang - Definições de Tokens
+================================
 
 Definições e utilitários para tokens da linguagem DoceLang.
 
 Autor: Projeto Compiladores 2025
 """
 
-from lexer import TokenType, Token
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .lexer import TipoToken, Token
+else:
+    try:
+        from lexer.lexer import TipoToken, Token
+    except ImportError:
+        from .lexer import TipoToken, Token
 
 
 # Mapeamento de tipos de tokens para descrições legíveis
-TOKEN_DESCRIPTIONS = {
-    TokenType.RECIPE: "Palavra-chave 'recipe'",
-    TokenType.INGREDIENTS: "Palavra-chave 'ingredients'",
-    TokenType.PREPARATION: "Palavra-chave 'preparation'",
-    TokenType.ADD: "Comando 'add'",
-    TokenType.MIX: "Comando 'mix'",
-    TokenType.HEAT: "Comando 'heat'",
-    TokenType.WAIT: "Comando 'wait'",
-    TokenType.SERVE: "Comando 'serve'",
-    TokenType.REPEAT: "Comando 'repeat'",
-    TokenType.TIMES: "Palavra-chave 'times'",
-    TokenType.LBRACE: "Delimitador '{'",
-    TokenType.RBRACE: "Delimitador '}'",
-    TokenType.SEMICOLON: "Delimitador ';'",
-    TokenType.IDENTIFIER: "Identificador",
-    TokenType.NUMBER: "Número inteiro",
-    TokenType.TIME: "Tempo (com unidade)",
-    TokenType.TEMPERATURE: "Temperatura (com unidade)",
-    TokenType.EOF: "Fim de arquivo",
+DESCRICOES_TOKENS = {
+    TipoToken.RECEITA: "Palavra-chave 'recipe'",
+    TipoToken.INGREDIENTES: "Palavra-chave 'ingredients'",
+    TipoToken.PREPARO: "Palavra-chave 'preparation'",
+    TipoToken.ADICIONAR: "Comando 'add'",
+    TipoToken.MISTURAR: "Comando 'mix'",
+    TipoToken.AQUECER: "Comando 'heat'",
+    TipoToken.ESPERAR: "Comando 'wait'",
+    TipoToken.SERVIR: "Comando 'serve'",
+    TipoToken.REPETIR: "Comando 'repeat'",
+    TipoToken.VEZES: "Palavra-chave 'times'",
+    TipoToken.CHAVE_ESQ: "Delimitador '{'",
+    TipoToken.CHAVE_DIR: "Delimitador '}'",
+    TipoToken.PONTO_VIRGULA: "Delimitador ';'",
+    TipoToken.IDENTIFICADOR: "Identificador",
+    TipoToken.NUMERO: "Número inteiro",
+    TipoToken.TEMPO: "Tempo (com unidade)",
+    TipoToken.TEMPERATURA: "Temperatura (com unidade)",
+    TipoToken.FIM_ARQUIVO: "Fim de arquivo",
 }
 
 
-def token_to_string(token: Token) -> str:
+def token_para_string(token: Token) -> str:
     """
     Converte token para string descritiva
     
@@ -43,11 +51,11 @@ def token_to_string(token: Token) -> str:
     Returns:
         String formatada com informações do token
     """
-    desc = TOKEN_DESCRIPTIONS.get(token.type, "Desconhecido")
-    return f"{desc:30s} | Valor: '{token.value:15s}' | Posição: {token.line}:{token.column}"
+    desc = DESCRICOES_TOKENS.get(token.tipo, "Desconhecido")
+    return f"{desc:30s} | Valor: '{token.valor:15s}' | Posição: {token.linha}:{token.coluna}"
 
 
-def print_tokens_table(tokens):
+def imprimir_tabela_tokens(tokens):
     """
     Imprime tabela formatada de tokens
     
@@ -61,12 +69,12 @@ def print_tokens_table(tokens):
     print("-" * 80)
     
     for i, token in enumerate(tokens, 1):
-        print(f"{i:<5} {token.type.value:<20} {token.value:<20} {token.line}:{token.column}")
+        print(f"{i:<5} {token.tipo.value:<20} {token.valor:<20} {token.linha}:{token.coluna}")
     
     print("=" * 80)
 
 
-def validate_token_sequence(tokens):
+def validar_sequencia_tokens(tokens):
     """
     Valida sequência básica de tokens
     
@@ -74,37 +82,37 @@ def validate_token_sequence(tokens):
         tokens: Lista de tokens a validar
         
     Returns:
-        tuple: (is_valid, errors)
+        tuple: (eh_valido, erros)
     """
-    errors = []
+    erros = []
     
-    # Deve começar com RECIPE
-    if not tokens or tokens[0].type != TokenType.RECIPE:
-        errors.append("Programa deve começar com 'recipe'")
+    # Deve começar com RECEITA
+    if not tokens or tokens[0].tipo != TipoToken.RECEITA:
+        erros.append("Programa deve começar com 'recipe'")
     
-    # Deve terminar com EOF
-    if tokens and tokens[-1].type != TokenType.EOF:
-        errors.append("Última token deve ser EOF")
+    # Deve terminar com FIM_ARQUIVO
+    if tokens and tokens[-1].tipo != TipoToken.FIM_ARQUIVO:
+        erros.append("Última token deve ser FIM_ARQUIVO")
     
     # Verificar balanceamento de chaves
-    brace_count = 0
+    contador_chaves = 0
     for token in tokens:
-        if token.type == TokenType.LBRACE:
-            brace_count += 1
-        elif token.type == TokenType.RBRACE:
-            brace_count -= 1
+        if token.tipo == TipoToken.CHAVE_ESQ:
+            contador_chaves += 1
+        elif token.tipo == TipoToken.CHAVE_DIR:
+            contador_chaves -= 1
         
-        if brace_count < 0:
-            errors.append(f"Chave fechada sem correspondente na linha {token.line}")
+        if contador_chaves < 0:
+            erros.append(f"Chave fechada sem correspondente na linha {token.linha}")
     
-    if brace_count > 0:
-        errors.append("Chaves não balanceadas - faltam fechamentos")
+    if contador_chaves > 0:
+        erros.append("Chaves não balanceadas - faltam fechamentos")
     
-    return (len(errors) == 0, errors)
+    return (len(erros) == 0, erros)
 
 
 # Exemplos de padrões válidos
-VALID_PATTERNS = {
+PADROES_VALIDOS = {
     'IDENTIFICADOR': [
         'leite_condensado',
         'chocolate_em_po',
@@ -132,7 +140,7 @@ VALID_PATTERNS = {
 
 
 # Exemplos de padrões inválidos
-INVALID_PATTERNS = {
+PADROES_INVALIDOS = {
     'IDENTIFICADOR': [
         ('1_ingrediente', 'Não pode começar com dígito'),
         ('ingrediente-nome', 'Hífen não permitido'),
@@ -158,14 +166,14 @@ if __name__ == '__main__':
     
     print("\nPadrões VÁLIDOS:")
     print("-" * 60)
-    for category, patterns in VALID_PATTERNS.items():
-        print(f"\n{category}:")
-        for pattern in patterns:
-            print(f"  ✅ {pattern}")
+    for categoria, padroes in PADROES_VALIDOS.items():
+        print(f"\n{categoria}:")
+        for padrao in padroes:
+            print(f"  ✅ {padrao}")
     
     print("\n\nPadrões INVÁLIDOS:")
     print("-" * 60)
-    for category, patterns in INVALID_PATTERNS.items():
-        print(f"\n{category}:")
-        for pattern, reason in patterns:
-            print(f"  ❌ {pattern:<20} - {reason}")
+    for categoria, padroes in PADROES_INVALIDOS.items():
+        print(f"\n{categoria}:")
+        for padrao, motivo in padroes:
+            print(f"  ❌ {padrao:<20} - {motivo}")

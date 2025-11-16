@@ -15,34 +15,34 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 
-class TokenType(Enum):
+class TipoToken(Enum):
     """Tipos de tokens da linguagem DoceLang"""
     
     # Palavras-chave
-    RECIPE = 'RECIPE'
-    INGREDIENTS = 'INGREDIENTS'
-    PREPARATION = 'PREPARATION'
-    ADD = 'ADD'
-    MIX = 'MIX'
-    HEAT = 'HEAT'
-    WAIT = 'WAIT'
-    SERVE = 'SERVE'
-    REPEAT = 'REPEAT'
-    TIMES = 'TIMES'
+    RECEITA = 'RECEITA'
+    INGREDIENTES = 'INGREDIENTES'
+    PREPARO = 'PREPARO'
+    ADICIONAR = 'ADICIONAR'
+    MISTURAR = 'MISTURAR'
+    AQUECER = 'AQUECER'
+    ESPERAR = 'ESPERAR'
+    SERVIR = 'SERVIR'
+    REPETIR = 'REPETIR'
+    VEZES = 'VEZES'
     
     # Delimitadores
-    LBRACE = 'LBRACE'
-    RBRACE = 'RBRACE'
-    SEMICOLON = 'SEMICOLON'
+    CHAVE_ESQ = 'CHAVE_ESQ'
+    CHAVE_DIR = 'CHAVE_DIR'
+    PONTO_VIRGULA = 'PONTO_VIRGULA'
     
     # Literais
-    IDENTIFIER = 'IDENTIFIER'
-    NUMBER = 'NUMBER'
-    TIME = 'TIME'
-    TEMPERATURE = 'TEMPERATURE'
+    IDENTIFICADOR = 'IDENTIFICADOR'
+    NUMERO = 'NUMERO'
+    TEMPO = 'TEMPO'
+    TEMPERATURA = 'TEMPERATURA'
     
     # Especiais
-    EOF = 'EOF'
+    FIM_ARQUIVO = 'FIM_ARQUIVO'
     
     def __str__(self):
         return self.value
@@ -51,78 +51,78 @@ class TokenType(Enum):
 @dataclass
 class Token:
     """Representa um token identificado pelo lexer"""
-    type: TokenType
-    value: str
-    line: int
-    column: int
+    tipo: TipoToken
+    valor: str
+    linha: int
+    coluna: int
     
     def __repr__(self):
-        return f"Token({self.type.value}, '{self.value}', {self.line}:{self.column})"
+        return f"Token({self.tipo.value}, '{self.valor}', {self.linha}:{self.coluna})"
 
 
-class LexicalError(Exception):
+class ErroLexico(Exception):
     """Exceção para erros léxicos"""
     pass
 
 
-class DoceLangLexer:
+class AnalisadorLexico:
     """Analisador léxico para DoceLang"""
     
     # Palavras-chave da linguagem
-    KEYWORDS = {
-        'recipe': TokenType.RECIPE,
-        'ingredients': TokenType.INGREDIENTS,
-        'preparation': TokenType.PREPARATION,
-        'add': TokenType.ADD,
-        'mix': TokenType.MIX,
-        'heat': TokenType.HEAT,
-        'wait': TokenType.WAIT,
-        'serve': TokenType.SERVE,
-        'repeat': TokenType.REPEAT,
-        'times': TokenType.TIMES,
+    PALAVRAS_CHAVE = {
+        'recipe': TipoToken.RECEITA,
+        'ingredients': TipoToken.INGREDIENTES,
+        'preparation': TipoToken.PREPARO,
+        'add': TipoToken.ADICIONAR,
+        'mix': TipoToken.MISTURAR,
+        'heat': TipoToken.AQUECER,
+        'wait': TipoToken.ESPERAR,
+        'serve': TipoToken.SERVIR,
+        'repeat': TipoToken.REPETIR,
+        'times': TipoToken.VEZES,
     }
     
     # Padrões regex (ordem importa!)
-    PATTERNS = [
+    PADROES = [
         # Comentários
         (r'//[^\n]*', None),  # Comentário de linha
         (r'/\*.*?\*/', None),  # Comentário de bloco
         
         # Tempo (antes de número)
-        (r'\d+(s|min|h)', TokenType.TIME),
+        (r'\d+(s|min|h)', TipoToken.TEMPO),
         
         # Temperatura (antes de número)
-        (r'\d+(C|F)', TokenType.TEMPERATURE),
+        (r'\d+(C|F)', TipoToken.TEMPERATURA),
         
         # Número
-        (r'\d+', TokenType.NUMBER),
+        (r'\d+', TipoToken.NUMERO),
         
         # Identificador (palavra-chave ou identificador)
-        (r'[a-zA-Z][a-zA-Z0-9_]*', 'KEYWORD_OR_IDENTIFIER'),
+        (r'[a-zA-Z][a-zA-Z0-9_]*', 'PALAVRA_CHAVE_OU_IDENTIFICADOR'),
         
         # Delimitadores
-        (r'\{', TokenType.LBRACE),
-        (r'\}', TokenType.RBRACE),
-        (r';', TokenType.SEMICOLON),
+        (r'\{', TipoToken.CHAVE_ESQ),
+        (r'\}', TipoToken.CHAVE_DIR),
+        (r';', TipoToken.PONTO_VIRGULA),
         
         # Espaços em branco (ignorar)
         (r'[ \t\n\r]+', None),
     ]
     
-    def __init__(self, source_code: str):
+    def __init__(self, codigo_fonte: str):
         """
         Inicializa o lexer com código-fonte
         
         Args:
-            source_code: String contendo o código DoceLang
+            codigo_fonte: String contendo o código DoceLang
         """
-        self.source = source_code
-        self.position = 0
-        self.line = 1
-        self.column = 1
+        self.fonte = codigo_fonte
+        self.posicao = 0
+        self.linha = 1
+        self.coluna = 1
         self.tokens: List[Token] = []
     
-    def tokenize(self) -> List[Token]:
+    def tokenizar(self) -> List[Token]:
         """
         Realiza análise léxica completa do código
         
@@ -130,61 +130,61 @@ class DoceLangLexer:
             Lista de tokens identificados
             
         Raises:
-            LexicalError: Se encontrar caractere inválido
+            ErroLexico: Se encontrar caractere inválido
         """
-        while self.position < len(self.source):
-            matched = False
+        while self.posicao < len(self.fonte):
+            casou = False
             
             # Tentar casar cada padrão
-            for pattern, token_type in self.PATTERNS:
-                regex = re.compile(pattern, re.DOTALL)  # DOTALL permite . capturar \n
-                match = regex.match(self.source, self.position)
+            for padrao, tipo_token in self.PADROES:
+                regex = re.compile(padrao, re.DOTALL)  # DOTALL permite . capturar \n
+                casamento = regex.match(self.fonte, self.posicao)
                 
-                if match:
-                    value = match.group(0)
+                if casamento:
+                    valor = casamento.group(0)
                     
                     # Pular comentários e espaços
-                    if token_type is None:
+                    if tipo_token is None:
                         # Atualizar linha/coluna
-                        for char in value:
+                        for char in valor:
                             if char == '\n':
-                                self.line += 1
-                                self.column = 1
+                                self.linha += 1
+                                self.coluna = 1
                             else:
-                                self.column += 1
+                                self.coluna += 1
                     
                     # Identificadores e palavras-chave
-                    elif token_type == 'KEYWORD_OR_IDENTIFIER':
-                        actual_type = self.KEYWORDS.get(value, TokenType.IDENTIFIER)
-                        token = Token(actual_type, value, self.line, self.column)
+                    elif tipo_token == 'PALAVRA_CHAVE_OU_IDENTIFICADOR':
+                        tipo_real = self.PALAVRAS_CHAVE.get(valor, TipoToken.IDENTIFICADOR)
+                        token = Token(tipo_real, valor, self.linha, self.coluna)
                         self.tokens.append(token)
-                        self.column += len(value)
+                        self.coluna += len(valor)
                     
                     # Outros tokens
                     else:
-                        token = Token(token_type, value, self.line, self.column)
+                        token = Token(tipo_token, valor, self.linha, self.coluna)
                         self.tokens.append(token)
-                        self.column += len(value)
+                        self.coluna += len(valor)
                     
-                    self.position = match.end()
-                    matched = True
+                    self.posicao = casamento.end()
+                    casou = True
                     break
             
-            if not matched:
-                char = self.source[self.position]
-                raise LexicalError(
-                    f"Caractere inválido '{char}' na linha {self.line}, "
-                    f"coluna {self.column}"
+            if not casou:
+                char = self.fonte[self.posicao]
+                raise ErroLexico(
+                    f"Caractere inválido '{char}' na linha {self.linha}, "
+                    f"coluna {self.coluna}"
                 )
         
         # Adicionar EOF
-        self.tokens.append(Token(TokenType.EOF, '', self.line, self.column))
+        self.tokens.append(Token(TipoToken.FIM_ARQUIVO, '', self.linha, self.coluna))
         return self.tokens
     
-    def get_tokens(self) -> List[Token]:
+    def obter_tokens(self) -> List[Token]:
         """Retorna lista de tokens (tokeniza se necessário)"""
         if not self.tokens:
-            self.tokenize()
+            self.tokenizar()
         return self.tokens
 
 
@@ -192,7 +192,7 @@ def main():
     """Função principal para teste do lexer"""
     
     # Código de exemplo
-    example_code = """
+    codigo_exemplo = """
     /*
      * Exemplo: Brigadeiro
      */
@@ -220,12 +220,12 @@ def main():
     print("=" * 60)
     print("\nCódigo de entrada:")
     print("-" * 60)
-    print(example_code)
+    print(codigo_exemplo)
     print("-" * 60)
     
     try:
-        lexer = DoceLangLexer(example_code)
-        tokens = lexer.tokenize()
+        lexer = AnalisadorLexico(codigo_exemplo)
+        tokens = lexer.tokenizar()
         
         print(f"\n✅ Análise léxica concluída com sucesso!")
         print(f"📊 Total de tokens: {len(tokens)}\n")
@@ -236,7 +236,7 @@ def main():
         for i, token in enumerate(tokens, 1):
             print(f"{i:3d}. {token}")
         
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"\n❌ ERRO LÉXICO: {e}")
 
 
