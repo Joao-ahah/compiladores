@@ -14,8 +14,8 @@ from pathlib import Path
 # Adicionar diretório do lexer ao path
 sys.path.insert(0, str(Path(__file__).parent / 'lexer'))
 
-from lexer import DoceLangLexer, LexicalError
-from tokens import print_tokens_table, validate_token_sequence
+from lexer import AnalisadorLexico, ErroLexico
+from tokens import imprimir_tabela_tokens, validar_sequencia_tokens
 
 
 def process_file(filepath):
@@ -34,15 +34,15 @@ def process_file(filepath):
         print("-" * 70)
         
         # Tokenizar
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
         print(f"\n✅ Tokenização concluída: {len(tokens)} tokens")
         
         # Estatísticas
         stats = {}
         for token in tokens:
-            type_name = token.type.value
+            type_name = token.tipo.value
             stats[type_name] = stats.get(type_name, 0) + 1
         
         print("\n📊 Estatísticas de Tokens:")
@@ -51,21 +51,21 @@ def process_file(filepath):
         
         # Tabela de tokens
         print("\n📋 Tabela de Tokens:")
-        print_tokens_table(tokens)
+        imprimir_tabela_tokens(tokens)
         
         # Validação
-        is_valid, errors = validate_token_sequence(tokens)
+        eh_valido, erros = validar_sequencia_tokens(tokens)
         
-        if is_valid:
+        if eh_valido:
             print("\n✅ VALIDAÇÃO: Sequência de tokens válida!")
         else:
             print("\n⚠️  VALIDAÇÃO: Problemas encontrados:")
-            for error in errors:
-                print(f"  - {error}")
+            for erro in erros:
+                print(f"  - {erro}")
         
         return True, len(tokens), stats
         
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"\n❌ ERRO LÉXICO: {e}")
         return False, 0, {}
         

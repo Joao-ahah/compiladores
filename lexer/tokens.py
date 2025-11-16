@@ -7,15 +7,7 @@ Definições e utilitários para tokens da linguagem DoceLang.
 Autor: Projeto Compiladores 2025
 """
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .lexer import TipoToken, Token
-else:
-    try:
-        from lexer.lexer import TipoToken, Token
-    except ImportError:
-        from .lexer import TipoToken, Token
+from lexer import TipoToken, Token
 
 
 # Mapeamento de tipos de tokens para descrições legíveis

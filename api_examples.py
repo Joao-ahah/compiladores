@@ -7,8 +7,8 @@ Este arquivo demonstra como usar o lexer DoceLang em diferentes cenários.
 Autor: Projeto Compiladores 2025
 """
 
-from lexer.lexer import DoceLangLexer, TokenType, Token, LexicalError
-from lexer.tokens import print_tokens_table, validate_token_sequence
+from lexer.lexer import AnalisadorLexico, TipoToken, Token, ErroLexico
+from lexer.tokens import imprimir_tabela_tokens, validar_sequencia_tokens
 
 
 # ============================================
@@ -27,12 +27,12 @@ def exemplo_basico():
     }
     """
     
-    lexer = DoceLangLexer(code)
-    tokens = lexer.tokenize()
+    lexer = AnalisadorLexico(code)
+    tokens = lexer.tokenizar()
     
     print(f"✅ {len(tokens)} tokens encontrados")
     for token in tokens:
-        print(f"  {token.type.value:15s} '{token.value}'")
+        print(f"  {token.tipo.value:15s} '{token.valor}'")
 
 
 # ============================================
@@ -50,8 +50,8 @@ def exemplo_arquivo():
         with open(filepath, 'r', encoding='utf-8') as f:
             code = f.read()
         
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        lexer = AnalisadorLexico(code)
+        tokens = lexer.tokenizar()
         
         print(f"📄 Arquivo: {filepath}")
         print(f"✅ Tokens: {len(tokens)}")
@@ -59,7 +59,7 @@ def exemplo_arquivo():
         # Contar por tipo
         counts = {}
         for token in tokens:
-            counts[token.type.value] = counts.get(token.type.value, 0) + 1
+            counts[token.tipo.value] = counts.get(token.tipo.value, 0) + 1
         
         print("\n📊 Distribuição:")
         for type_name, count in sorted(counts.items()):
@@ -97,29 +97,29 @@ def exemplo_filtrar_tokens():
     }
     """
     
-    lexer = DoceLangLexer(code)
-    tokens = lexer.tokenize()
+    lexer = AnalisadorLexico(code)
+    tokens = lexer.tokenizar()
     
     # Filtrar ingredientes (IDENTIFIERs após INGREDIENTS ou SEMICOLON dentro do bloco)
-    identifiers = [t.value for t in tokens if t.type == TokenType.IDENTIFIER]
+    identifiers = [t.valor for t in tokens if t.tipo == TipoToken.IDENTIFICADOR]
     print(f"🔍 Identificadores: {identifiers}")
     
     # Filtrar comandos
-    commands = [t for t in tokens if t.type in (
-        TokenType.ADD, TokenType.MIX, TokenType.HEAT,
-        TokenType.WAIT, TokenType.SERVE, TokenType.REPEAT
+    commands = [t for t in tokens if t.tipo in (
+        TipoToken.ADICIONAR, TipoToken.MISTURAR, TipoToken.AQUECER,
+        TipoToken.ESPERAR, TipoToken.SERVIR, TipoToken.REPETIR
     )]
     print(f"\n🔍 Comandos ({len(commands)}):")
     for cmd in commands:
-        print(f"  - {cmd.value} (linha {cmd.line}, coluna {cmd.column})")
+        print(f"  - {cmd.valor} (linha {cmd.linha}, coluna {cmd.coluna})")
     
     # Filtrar tempos
-    times = [t for t in tokens if t.type == TokenType.TIME]
-    print(f"\n🔍 Tempos: {[t.value for t in times]}")
+    times = [t for t in tokens if t.tipo == TipoToken.TEMPO]
+    print(f"\n🔍 Tempos: {[t.valor for t in times]}")
     
     # Filtrar temperaturas
-    temps = [t for t in tokens if t.type == TokenType.TEMPERATURE]
-    print(f"🔍 Temperaturas: {[t.value for t in temps]}")
+    temps = [t for t in tokens if t.tipo == TipoToken.TEMPERATURA]
+    print(f"🔍 Temperaturas: {[t.valor for t in temps]}")
 
 
 # ============================================
@@ -149,18 +149,18 @@ def exemplo_validacao():
     
     print("📝 Testando código VÁLIDO:")
     try:
-        lexer = DoceLangLexer(valid_code)
-        tokens = lexer.tokenize()
+        lexer = AnalisadorLexico(valid_code)
+        tokens = lexer.tokenizar()
         print(f"  ✅ {len(tokens)} tokens - SEM ERROS")
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"  ❌ Erro: {e}")
     
     print("\n📝 Testando código INVÁLIDO:")
     try:
-        lexer = DoceLangLexer(invalid_code)
-        tokens = lexer.tokenize()
+        lexer = AnalisadorLexico(invalid_code)
+        tokens = lexer.tokenizar()
         print(f"  ⚠️  {len(tokens)} tokens processados")
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"  ✅ Erro detectado corretamente: {e}")
 
 
@@ -194,8 +194,8 @@ def exemplo_estatisticas():
     }
     """
     
-    lexer = DoceLangLexer(code)
-    tokens = lexer.tokenize()
+    lexer = AnalisadorLexico(code)
+    tokens = lexer.tokenizar()
     
     print(f"📊 ESTATÍSTICAS GERAIS:")
     print(f"  Total de tokens: {len(tokens)}")
@@ -203,17 +203,17 @@ def exemplo_estatisticas():
     print(f"  Caracteres: {len(code)}")
     
     # Tokens por categoria
-    keywords = [t for t in tokens if t.type.value in (
+    keywords = [t for t in tokens if t.tipo.value in (
         'RECIPE', 'INGREDIENTS', 'PREPARATION',
         'ADD', 'MIX', 'HEAT', 'WAIT', 'SERVE', 'REPEAT', 'TIMES'
     )]
-    identifiers = [t for t in tokens if t.type == TokenType.IDENTIFIER]
-    numbers = [t for t in tokens if t.type == TokenType.NUMBER]
-    times = [t for t in tokens if t.type == TokenType.TIME]
-    temps = [t for t in tokens if t.type == TokenType.TEMPERATURE]
-    symbols = [t for t in tokens if t.type in (
-        TokenType.LBRACE, TokenType.RBRACE,
-        TokenType.SEMICOLON
+    identifiers = [t for t in tokens if t.tipo == TipoToken.IDENTIFICADOR]
+    numbers = [t for t in tokens if t.tipo == TipoToken.NUMERO]
+    times = [t for t in tokens if t.tipo == TipoToken.TEMPO]
+    temps = [t for t in tokens if t.tipo == TipoToken.TEMPERATURA]
+    symbols = [t for t in tokens if t.tipo in (
+        TipoToken.CHAVE_ESQ, TipoToken.CHAVE_DIR,
+        TipoToken.PONTO_VIRGULA
     )]
     
     print(f"\n📊 POR CATEGORIA:")
@@ -225,10 +225,10 @@ def exemplo_estatisticas():
     print(f"  Símbolos: {len(symbols)}")
     
     # Complexidade
-    loops = [t for t in tokens if t.type == TokenType.REPEAT]
-    commands = [t for t in tokens if t.type in (
-        TokenType.ADD, TokenType.MIX, TokenType.HEAT,
-        TokenType.WAIT, TokenType.SERVE
+    loops = [t for t in tokens if t.tipo == TipoToken.REPETIR]
+    commands = [t for t in tokens if t.tipo in (
+        TipoToken.ADICIONAR, TipoToken.MISTURAR, TipoToken.AQUECER,
+        TipoToken.ESPERAR, TipoToken.SERVIR
     )]
     
     print(f"\n📊 COMPLEXIDADE:")
@@ -253,13 +253,13 @@ def exemplo_posicoes():
     
     print(f"Código:\n{code}\n")
     
-    lexer = DoceLangLexer(code)
-    tokens = lexer.tokenize()
+    lexer = AnalisadorLexico(code)
+    tokens = lexer.tokenizar()
     
     print("Token                 Tipo              Linha  Coluna")
     print("-" * 60)
     for token in tokens:
-        print(f"{token.value:20s} {token.type.value:15s} {token.line:5d}  {token.column:5d}")
+        print(f"{token.valor:20s} {token.tipo.value:15s} {token.linha:5d}  {token.coluna:5d}")
 
 
 # ============================================
@@ -288,9 +288,9 @@ def exemplo_validacao_sequencia():
     """
     
     print("📝 Código COMPLETO:")
-    lexer = DoceLangLexer(complete)
-    tokens = lexer.tokenize()
-    is_valid, errors = validate_token_sequence(tokens)
+    lexer = AnalisadorLexico(complete)
+    tokens = lexer.tokenizar()
+    is_valid, errors = validar_sequencia_tokens(tokens)
     if is_valid:
         print("  ✅ Sequência válida!")
     else:
@@ -299,9 +299,9 @@ def exemplo_validacao_sequencia():
             print(f"    - {error}")
     
     print("\n📝 Código INCOMPLETO:")
-    lexer = DoceLangLexer(incomplete)
-    tokens = lexer.tokenize()
-    is_valid, errors = validate_token_sequence(tokens)
+    lexer = AnalisadorLexico(incomplete)
+    tokens = lexer.tokenizar()
+    is_valid, errors = validar_sequencia_tokens(tokens)
     if is_valid:
         print("  ✅ Sequência válida!")
     else:
@@ -360,16 +360,16 @@ def exemplo_comparacao():
     print("-" * 60)
     
     for name, code in receitas.items():
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        lexer = AnalisadorLexico(code)
+        tokens = lexer.tokenizar()
         
-        comandos = len([t for t in tokens if t.type in (
-            TokenType.ADD, TokenType.MIX, TokenType.HEAT,
-            TokenType.WAIT, TokenType.SERVE
+        comandos = len([t for t in tokens if t.tipo in (
+            TipoToken.ADICIONAR, TipoToken.MISTURAR, TipoToken.AQUECER,
+            TipoToken.ESPERAR, TipoToken.SERVIR
         )])
         
-        ingredientes = len([t for t in tokens if t.type == TokenType.IDENTIFIER])
-        loops = len([t for t in tokens if t.type == TokenType.REPEAT])
+        ingredientes = len([t for t in tokens if t.tipo == TipoToken.IDENTIFICADOR])
+        loops = len([t for t in tokens if t.tipo == TipoToken.REPETIR])
         
         print(f"{name:12s} {len(tokens):6d}  {comandos:8d}  {ingredientes:12d}  {loops:5d}")
 

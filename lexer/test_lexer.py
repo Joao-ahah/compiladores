@@ -8,8 +8,8 @@ Autor: Projeto Compiladores 2025
 """
 
 import sys
-from lexer import DoceLangLexer, TokenType, LexicalError
-from tokens import print_tokens_table, validate_token_sequence
+from lexer import AnalisadorLexico, TipoToken, ErroLexico
+from tokens import imprimir_tabela_tokens, validar_sequencia_tokens
 
 
 def test_minimal_program():
@@ -33,21 +33,21 @@ def test_minimal_program():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
         print(f"✅ Tokens: {len(tokens)}")
-        print_tokens_table(tokens)
+        imprimir_tabela_tokens(tokens)
         
-        is_valid, errors = validate_token_sequence(tokens)
-        if is_valid:
+        eh_valido, erros = validar_sequencia_tokens(tokens)
+        if eh_valido:
             print("✅ Sequência de tokens válida!")
         else:
             print("❌ Erros encontrados:")
-            for error in errors:
-                print(f"  - {error}")
+            for erro in erros:
+                print(f"  - {erro}")
                 
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
@@ -79,18 +79,18 @@ def test_all_commands():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
         # Contar tipos de comandos
         commands = {
-            'ADD': 0, 'MIX': 0, 'HEAT': 0,
-            'WAIT': 0, 'SERVE': 0, 'REPEAT': 0
+            'ADICIONAR': 0, 'MISTURAR': 0, 'AQUECER': 0,
+            'ESPERAR': 0, 'SERVIR': 0, 'REPETIR': 0
         }
         
         for token in tokens:
-            if token.type.value in commands:
-                commands[token.type.value] += 1
+            if token.tipo.value in commands:
+                commands[token.tipo.value] += 1
         
         print(f"✅ Tokens: {len(tokens)}")
         print("\nComandos encontrados:")
@@ -102,7 +102,7 @@ def test_all_commands():
         else:
             print("\n⚠️  Alguns comandos faltando")
             
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
@@ -131,19 +131,19 @@ def test_comments():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
         print(f"✅ Tokens: {len(tokens)} (comentários ignorados)")
         
         # Verificar que não há tokens de comentário
-        comment_tokens = [t for t in tokens if 'COMMENT' in str(t.type)]
+        comment_tokens = [t for t in tokens if 'COMMENT' in str(t.tipo)]
         if not comment_tokens:
             print("✅ Comentários corretamente ignorados!")
         else:
             print(f"❌ {len(comment_tokens)} tokens de comentário encontrados")
             
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
@@ -168,22 +168,22 @@ def test_time_units():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
-        time_tokens = [t for t in tokens if t.type == TokenType.TIME]
+        time_tokens = [t for t in tokens if t.tipo == TipoToken.TEMPO]
         
         print(f"✅ Tempos encontrados: {len(time_tokens)}")
         for token in time_tokens:
-            print(f"  - {token.value}")
+            print(f"  - {token.valor}")
         
         expected_times = ['30s', '5min', '2h']
-        if all(t.value in expected_times for t in time_tokens):
+        if all(t.valor in expected_times for t in time_tokens):
             print("✅ Todas as unidades de tempo corretas!")
         else:
             print("❌ Unidades de tempo incorretas")
             
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
@@ -208,22 +208,22 @@ def test_temperature_units():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
-        temp_tokens = [t for t in tokens if t.type == TokenType.TEMPERATURE]
+        temp_tokens = [t for t in tokens if t.tipo == TipoToken.TEMPERATURA]
         
         print(f"✅ Temperaturas encontradas: {len(temp_tokens)}")
         for token in temp_tokens:
-            print(f"  - {token.value}")
+            print(f"  - {token.valor}")
         
         expected_temps = ['100C', '180C', '350F']
-        if all(t.value in expected_temps for t in temp_tokens):
+        if all(t.valor in expected_temps for t in temp_tokens):
             print("✅ Todas as temperaturas corretas!")
         else:
             print("❌ Temperaturas incorretas")
             
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
@@ -244,11 +244,11 @@ def test_invalid_character():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         print("❌ Deveria ter dado erro!")
         
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"✅ Erro detectado corretamente: {e}")
 
 
@@ -285,28 +285,28 @@ def test_brigadeiro():
     print(f"Código:\n{code}")
     
     try:
-        lexer = DoceLangLexer(code)
-        tokens = lexer.tokenize()
+        analisador = AnalisadorLexico(code)
+        tokens = analisador.tokenizar()
         
         print(f"✅ Tokens: {len(tokens)}")
         
         # Estatísticas
-        ingredients = [t for t in tokens if t.type == TokenType.IDENTIFIER and tokens[tokens.index(t)-1].type in (TokenType.INGREDIENTS, TokenType.SEMICOLON)]
-        commands = [t for t in tokens if t.type in (TokenType.ADD, TokenType.MIX, TokenType.HEAT, TokenType.WAIT, TokenType.SERVE, TokenType.REPEAT)]
+        ingredients = [t for t in tokens if t.tipo == TipoToken.IDENTIFICADOR and tokens[tokens.index(t)-1].tipo in (TipoToken.INGREDIENTES, TipoToken.PONTO_VIRGULA)]
+        commands = [t for t in tokens if t.tipo in (TipoToken.ADICIONAR, TipoToken.MISTURAR, TipoToken.AQUECER, TipoToken.ESPERAR, TipoToken.SERVIR, TipoToken.REPETIR)]
         
         print(f"\nEstatísticas:")
         print(f"  Comandos: {len(commands)}")
-        print(f"  Palavras-chave: {len([t for t in tokens if t.type.value in ('RECIPE', 'INGREDIENTS', 'PREPARATION')])}")
+        print(f"  Palavras-chave: {len([t for t in tokens if t.tipo.value in ('RECIPE', 'INGREDIENTS', 'PREPARATION')])}")
         
-        is_valid, errors = validate_token_sequence(tokens)
-        if is_valid:
+        eh_valido, erros = validar_sequencia_tokens(tokens)
+        if eh_valido:
             print("\n✅ Receita válida!")
         else:
             print("\n❌ Erros:")
-            for error in errors:
-                print(f"  - {error}")
+            for erro in erros:
+                print(f"  - {erro}")
                 
-    except LexicalError as e:
+    except ErroLexico as e:
         print(f"❌ ERRO: {e}")
 
 
