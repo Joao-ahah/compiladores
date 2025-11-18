@@ -1,19 +1,6 @@
-"""
-DoceLang - Exemplos de Uso da API
-==================================
-
-Este arquivo demonstra como usar o lexer DoceLang em diferentes cenários.
-
-Autor: Projeto Compiladores 2025
-"""
-
 from lexer.lexer import AnalisadorLexico, TipoToken, Token, ErroLexico
 from lexer.tokens import imprimir_tabela_tokens, validar_sequencia_tokens
 
-
-# ============================================
-# EXEMPLO 1: Uso Básico
-# ============================================
 def exemplo_basico():
     """Uso mais simples possível"""
     print("\n" + "="*60)
@@ -34,10 +21,8 @@ def exemplo_basico():
     for token in tokens:
         print(f"  {token.tipo.value:15s} '{token.valor}'")
 
-
-# ============================================
 # EXEMPLO 2: Análise de Arquivo
-# ============================================
+
 def exemplo_arquivo():
     """Processar arquivo .doce"""
     print("\n" + "="*60)
@@ -68,10 +53,7 @@ def exemplo_arquivo():
     except FileNotFoundError:
         print(f"❌ Arquivo não encontrado: {filepath}")
 
-
-# ============================================
 # EXEMPLO 3: Filtrar Tokens por Tipo
-# ============================================
 def exemplo_filtrar_tokens():
     """Extrair apenas tokens específicos"""
     print("\n" + "="*60)
@@ -121,10 +103,7 @@ def exemplo_filtrar_tokens():
     temps = [t for t in tokens if t.tipo == TipoToken.TEMPERATURA]
     print(f"🔍 Temperaturas: {[t.valor for t in temps]}")
 
-
-# ============================================
 # EXEMPLO 4: Validação e Detecção de Erros
-# ============================================
 def exemplo_validacao():
     """Detectar erros em código"""
     print("\n" + "="*60)
@@ -139,7 +118,7 @@ def exemplo_validacao():
     }
     """
     
-    # Código inválido (caractere especial)
+    # Código inválido caractere especial
     invalid_code = """
     recipe Inválido {
         ingredients { açúcar; }
@@ -163,10 +142,7 @@ def exemplo_validacao():
     except ErroLexico as e:
         print(f"  ✅ Erro detectado corretamente: {e}")
 
-
-# ============================================
 # EXEMPLO 5: Estatísticas Detalhadas
-# ============================================
 def exemplo_estatisticas():
     """Gerar estatísticas completas"""
     print("\n" + "="*60)
@@ -236,10 +212,7 @@ def exemplo_estatisticas():
     print(f"  Loops: {len(loops)}")
     print(f"  Ingredientes: {len(identifiers)}")
 
-
-# ============================================
-# EXEMPLO 6: Posição dos Tokens (Debug)
-# ============================================
+# EXEMPLO 6: Posição dos Tokens
 def exemplo_posicoes():
     """Mostrar posição exata de cada token"""
     print("\n" + "="*60)
@@ -261,10 +234,7 @@ def exemplo_posicoes():
     for token in tokens:
         print(f"{token.valor:20s} {token.tipo.value:15s} {token.linha:5d}  {token.coluna:5d}")
 
-
-# ============================================
 # EXEMPLO 7: Validação de Sequência
-# ============================================
 def exemplo_validacao_sequencia():
     """Validar sequência de tokens"""
     print("\n" + "="*60)
@@ -279,7 +249,7 @@ def exemplo_validacao_sequencia():
     }
     """
     
-    # Código incompleto (sem serve)
+    # Código incompleto sem serve
     incomplete = """
     recipe Incompleto {
         ingredients { x; }
@@ -309,10 +279,7 @@ def exemplo_validacao_sequencia():
         for error in errors:
             print(f"    - {error}")
 
-
-# ============================================
 # EXEMPLO 8: Comparar Múltiplos Códigos
-# ============================================
 def exemplo_comparacao():
     """Comparar diferentes receitas"""
     print("\n" + "="*60)
@@ -374,9 +341,7 @@ def exemplo_comparacao():
         print(f"{name:12s} {len(tokens):6d}  {comandos:8d}  {ingredientes:12d}  {loops:5d}")
 
 
-# ============================================
 # MAIN: Executar todos os exemplos
-# ============================================
 def main():
     """Executa todos os exemplos"""
     print("=" * 60)

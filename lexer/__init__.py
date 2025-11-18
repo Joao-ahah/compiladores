@@ -1,12 +1,3 @@
-"""
-DoceLang Lexer Package
-======================
-
-Analisador léxico para a linguagem DoceLang
-
-Autor: Projeto Compiladores 2025
-"""
-
 from .lexer import (
     TipoToken,
     Token,

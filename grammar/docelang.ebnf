@@ -2,11 +2,7 @@
  * ================================================
  * GRAMÁTICA DOCELANG - VERSÃO 2.0 (COMPLETA)
  * ================================================
- * 
  * Notação: EBNF (Extended Backus-Naur Form)
- * Autor: Projeto Compiladores 2025
- * Data: 15 de novembro de 2025
- * 
  * Legenda:
  *   { }   - repetição zero ou mais vezes
  *   [ ]   - opcional (zero ou uma vez)

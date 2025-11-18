@@ -1,14 +1,3 @@
-"""
-DoceLang Lexer (Analisador Léxico)
-===================================
-
-Implementação do analisador léxico para a linguagem DoceLang.
-Converte código-fonte em sequência de tokens.
-
-Autor: Projeto Compiladores 2025
-Data: 15 de novembro de 2025
-"""
-
 import re
 from enum import Enum
 from typing import List, Optional
@@ -82,11 +71,11 @@ class AnalisadorLexico:
         'times': TipoToken.VEZES,
     }
     
-    # Padrões regex (ordem importa!)
+    # Padrões regex 
     PADROES = [
         # Comentários
-        (r'//[^\n]*', None),  # Comentário de linha
-        (r'/\*.*?\*/', None),  # Comentário de bloco
+        (r'//[^\n]*', None),  
+        (r'/\*.*?\*/', None), 
         
         # Tempo (antes de número)
         (r'\d+(s|min|h)', TipoToken.TEMPO),
@@ -97,7 +86,7 @@ class AnalisadorLexico:
         # Número
         (r'\d+', TipoToken.NUMERO),
         
-        # Identificador (palavra-chave ou identificador)
+        # Identificador palavra-chave ou identificador
         (r'[a-zA-Z][a-zA-Z0-9_]*', 'PALAVRA_CHAVE_OU_IDENTIFICADOR'),
         
         # Delimitadores
@@ -105,17 +94,11 @@ class AnalisadorLexico:
         (r'\}', TipoToken.CHAVE_DIR),
         (r';', TipoToken.PONTO_VIRGULA),
         
-        # Espaços em branco (ignorar)
+        # Espaços em branco ignora
         (r'[ \t\n\r]+', None),
     ]
     
     def __init__(self, codigo_fonte: str):
-        """
-        Inicializa o lexer com código-fonte
-        
-        Args:
-            codigo_fonte: String contendo o código DoceLang
-        """
         self.fonte = codigo_fonte
         self.posicao = 0
         self.linha = 1
@@ -123,15 +106,7 @@ class AnalisadorLexico:
         self.tokens: List[Token] = []
     
     def tokenizar(self) -> List[Token]:
-        """
-        Realiza análise léxica completa do código
         
-        Returns:
-            Lista de tokens identificados
-            
-        Raises:
-            ErroLexico: Se encontrar caractere inválido
-        """
         while self.posicao < len(self.fonte):
             casou = False
             

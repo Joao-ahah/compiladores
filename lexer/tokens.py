@@ -1,12 +1,3 @@
-"""
-DoceLang - Definições de Tokens
-================================
-
-Definições e utilitários para tokens da linguagem DoceLang.
-
-Autor: Projeto Compiladores 2025
-"""
-
 from lexer import TipoToken, Token
 
 

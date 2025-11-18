@@ -1,15 +1,6 @@
-"""
-DoceLang Lexer Tests
-====================
-
-Testes unitários para o analisador léxico da DoceLang.
-
-Autor: Projeto Compiladores 2025
-"""
-
 import sys
 from lexer import AnalisadorLexico, TipoToken, ErroLexico
-from tokens import imprimir_tabela_tokens, validar_sequencia_tokens
+from lexer.tokens import imprimir_tabela_tokens, validar_sequencia_tokens
 
 
 def test_minimal_program():
